@@ -1,0 +1,49 @@
+sudo: false
+
+language: php
+
+matrix:
+  include:
+    - name: '[CS] PHP 7.2'
+      php: '7.2'
+      env: cs=1
+    - name: '[CS] PHP Nightly'
+      php: nightly
+      env: cs=1
+
+    - name: '[UNIT] PHP 7.2 With Locked Dependencies'
+      php: '7.2'
+    - name: '[UNIT] PHP 7.2 With Lowest Dependencies'
+      php: '7.2'
+      env: dependencies=lowest
+    - name: '[UNIT] PHP 7.2 With Highest Dependencies'
+      php: '7.2'
+      env: dependencies=highest
+    - name: '[UNIT] PHP Nightly With Locked Dependencies'
+      php: nightly
+    - name: '[UNIT] PHP Nightly With Highest Dependencies'
+      php: nightly
+      env: dependencies=lowest
+    - name: '[UNIT] PHP Nightly With Lowest Dependencies'
+      php: nightly
+      env: dependencies=highest
+
+before_install:
+- phpenv config-rm xdebug.ini || echo "No xdebug config."
+
+install:
+- wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.0.0/php-coveralls.phar
+- chmod +x php-coveralls.phar
+
+before_script:
+  - travis_retry composer self-update
+  - if [ -z "$dependencies" ]; then travis_retry composer install; fi;
+  - if [ "$dependencies" = "lowest" ]; then travis_retry composer update --prefer-lowest -n; fi;
+  - if [ "$dependencies" = "highest" ]; then travis_retry composer update -n; fi;
+
+script:
+  - if [ "$cs" = 1 ]; then vendor/bin/phpcs -s; fi;
+  - if [ -z "$cs" ]; then phpdbg -qrr vendor/bin/phpunit --testsuite SocketInspectUnitTestSuite --coverage-text --coverage-clover build/logs/clover.xml; fi;
+
+after_success:
+  - travis_retry php php-coveralls.phar

@@ -34,6 +34,8 @@ class Server
             while ($socket = yield $server->accept()) {
                 asyncCall(function() use ($socket) {
                     $this->messageBroker->send(new NewClient($socket->getRemoteAddress()));
+
+                    yield from (new Client($socket, $this->messageBroker))->handleMessages();
                 }, $socket);
             }
         });

@@ -13,4 +13,8 @@ Loop::run(function () {
     $client = yield connect('tcp://127.0.0.1:2800');
 
     yield $client->write('Hello there server!');
+
+    while (null !== $chunk = yield $client->read()) {
+        echo $chunk . PHP_EOL;
+    }
 });

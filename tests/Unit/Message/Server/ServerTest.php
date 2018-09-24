@@ -19,9 +19,14 @@ class ServerTest extends TestCase
         $this->message = new class extends Server {
             public function __construct()
             {
-                parent::__construct('theType', Severity::INFO(), 'The message.');
+                parent::__construct('tcp://127.0.0.1:1337', 'theType', Severity::INFO(), 'The message.');
             }
         };
+    }
+
+    public function testSetsServer()
+    {
+        $this->assertSame('tcp://127.0.0.1:1337', $this->message->getServer());
     }
 
     public function testSetsCategory()

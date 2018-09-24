@@ -7,6 +7,7 @@ use Amp\Http\Server\Response;
 use Amp\Http\Server\Websocket\Application;
 use Amp\Http\Server\Websocket\Endpoint;
 use Amp\Http\Server\Websocket\Message;
+use PeeHaa\SocketInspect\Inspect\Message\Message as TransactionMessage;
 
 class WebSocket implements Application
 {
@@ -25,21 +26,26 @@ class WebSocket implements Application
         $this->endpoint = $endpoint;
     }
 
+    // phpcs:ignore SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
     public function onHandshake(Request $request, Response $response)
     {
         return $response;
     }
 
+    // phpcs:ignore SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
     public function onOpen(int $clientId, Request $request)
     {
         // TODO: Implement onOpen() method.
     }
 
+    // phpcs:ignore SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
     public function onData(int $clientId, Message $message)
     {
+        // phpcs:ignore SlevomatCodingStandard.ControlStructures.ControlStructureSpacing.IncorrectLinesCountBeforeControlStructure
         yield ($this->onNewServer)(yield $message->read());
     }
 
+    // phpcs:ignore SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
     public function onClose(int $clientId, int $code, string $reason)
     {
         // TODO: Implement onClose() method.
@@ -50,7 +56,7 @@ class WebSocket implements Application
         // TODO: Implement onStop() method.
     }
 
-    public function broadcast(\PeeHaa\SocketInspect\Inspect\Message\Message $message)
+    public function broadcast(TransactionMessage $message)
     {
         $this->endpoint->broadcast(json_encode($message));
     }

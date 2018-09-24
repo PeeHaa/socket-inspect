@@ -16,7 +16,12 @@ class ReceivedTest extends TestCase
 
     public function setUp()
     {
-        $this->message = new Received('This is the message.');
+        $this->message = new Received('tcp://127.0.0.1:1337', 'This is the message.');
+    }
+
+    public function testSetsServer()
+    {
+        $this->assertSame('tcp://127.0.0.1:1337', $this->message->getServer());
     }
 
     public function testSetsCategory()

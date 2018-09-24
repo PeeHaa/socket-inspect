@@ -18,9 +18,14 @@ class MessageTest extends TestCase
         $this->message = new class extends Message {
             public function __construct()
             {
-                parent::__construct(Category::SERVER(), 'test', Severity::INFO(), 'The message');
+                parent::__construct('tcp://127.0.0.1:1337', Category::SERVER(), 'test', Severity::INFO(), 'The message');
             }
         };
+    }
+
+    public function testSetsServer()
+    {
+        $this->assertSame('tcp://127.0.0.1:1337', $this->message->getServer());
     }
 
     public function testSetsCategory()
@@ -52,11 +57,19 @@ class MessageTest extends TestCase
     {
         $jsonData = json_decode(json_encode($this->message), true);
 
+        $this->assertArrayHasKey('server', $jsonData);
         $this->assertArrayHasKey('category', $jsonData);
         $this->assertArrayHasKey('type', $jsonData);
         $this->assertArrayHasKey('severity', $jsonData);
         $this->assertArrayHasKey('timestamp', $jsonData);
         $this->assertArrayHasKey('message', $jsonData);
+    }
+
+    public function testJsonSerializeSetsServer()
+    {
+        $jsonData = json_decode(json_encode($this->message), true);
+
+        $this->assertSame('tcp://127.0.0.1:1337', $jsonData['server']);
     }
 
     public function testJsonSerializeSetsCategory()

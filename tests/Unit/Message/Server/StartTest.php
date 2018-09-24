@@ -19,6 +19,11 @@ class StartTest extends TestCase
         $this->message = new Start('tcp://127.0.0.1:1337');
     }
 
+    public function testSetsServer()
+    {
+        $this->assertSame('tcp://127.0.0.1:1337', $this->message->getServer());
+    }
+
     public function testSetsCategory()
     {
         $this->assertSame(Category::SERVER()->getKey(), $this->message->getCategory()->getKey());

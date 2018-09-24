@@ -16,7 +16,12 @@ class NewClientTest extends TestCase
 
     public function setUp()
     {
-        $this->message = new NewClient('tcp://127.0.0.1:1337');
+        $this->message = new NewClient('tcp://127.0.0.1:1337', 'tcp://127.0.0.1:1338');
+    }
+
+    public function testSetsServer()
+    {
+        $this->assertSame('tcp://127.0.0.1:1337', $this->message->getServer());
     }
 
     public function testSetsCategory()
@@ -36,6 +41,6 @@ class NewClientTest extends TestCase
 
     public function testSetsMessage()
     {
-        $this->assertSame('Accepted connection from tcp://127.0.0.1:1337', $this->message->getMessage());
+        $this->assertSame('Accepted connection from tcp://127.0.0.1:1338', $this->message->getMessage());
     }
 }

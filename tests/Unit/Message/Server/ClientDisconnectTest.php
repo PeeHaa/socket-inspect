@@ -16,7 +16,12 @@ class ClientDisconnectTest extends TestCase
 
     public function setUp()
     {
-        $this->message = new ClientDisconnect();
+        $this->message = new ClientDisconnect('tcp://127.0.0.1:1337');
+    }
+
+    public function testSetsServer()
+    {
+        $this->assertSame('tcp://127.0.0.1:1337', $this->message->getServer());
     }
 
     public function testSetsCategory()

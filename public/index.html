@@ -78,7 +78,7 @@
             }
 
             main ul {
-                overflow-y: scroll;
+                overflow-y: auto;
                 max-height: calc(100% - 50px);
                 width: calc(100% - 450px);
                 float: left;
@@ -162,65 +162,7 @@
                     FooBar
                 </h1>
             </div>
-            <ul>
-                <li class="client">
-                    <h2 class="info">Client 1</h2>
-                    <pre>Lorem ipsum ble ble bleble</pre>
-                </li>
-                <li class="client">
-                    <h2 class="info">Client 1</h2>
-                    <pre>Lorem ipsum ble ble bleble</pre>
-                </li>
-                <li class="server">
-                    <h2 class="info">Server</h2>
-                    <h2 class="info direction">-></h2>
-                    <h2 class="info">Client 1</h2>
-                    <pre>Lorem ipsum ble ble bleble</pre>
-                </li>
-                <li class="client">
-                    <h2 class="info">Client 1</h2>
-                    <pre>Lorem ipsum ble ble bleble</pre>
-                </li>
-                <li class="client">
-                    <h2 class="info">Client 1</h2>
-                    <pre>Lorem ipsum ble ble bleble</pre>
-                </li>
-                <li class="server">
-                    <h2 class="info">Server</h2>
-                    <h2 class="info direction">-></h2>
-                    <h2 class="info">Client 1</h2>
-                    <pre>Lorem ipsum ble ble bleble</pre>
-                </li>
-                <li class="client">
-                    <h2 class="info">Client 1</h2>
-                    <pre>Lorem ipsum ble ble bleble</pre>
-                </li>
-                <li class="client">
-                    <h2 class="info">Client 1</h2>
-                    <pre>Lorem ipsum ble ble bleble</pre>
-                </li>
-                <li class="server">
-                    <h2 class="info">Server</h2>
-                    <h2 class="info direction">-></h2>
-                    <h2 class="info">Client 1</h2>
-                    <pre>Lorem ipsum ble ble bleble</pre>
-                </li>
-                <li class="client">
-                    <h2 class="info">Client 1</h2>
-                    <pre>Lorem ipsum ble blefoo	barbleble</pre>
-                </li>
-                <li class="client">
-                    <h2 class="info">Client 1</h2>
-                    <h2 class="info">Show whitespace characters</h2>
-                    <pre>Lorem·ipsum·ble·ble·bleble␣with·foo→bar!↵↵</pre>
-                </li>
-                <li class="server">
-                    <h2 class="info">Server</h2>
-                    <h2 class="info direction">-></h2>
-                    <h2 class="info">Client 1</h2>
-                    <pre>Lorem ipsum ble ble bleble</pre>
-                </li>
-            </ul>
+            <ul></ul>
             <div class="toolbox">
                 <form action="#">
                     <textarea></textarea>
@@ -228,5 +170,45 @@
                 </form>
             </div>
         </main>
+        <script>
+            const container = document.querySelector('main ul');
+
+            container.scrollTop = container.scrollHeight;
+
+            const connection = new WebSocket('ws://127.0.0.1:8080/live');
+
+            connection.addEventListener('message', function(message) {
+                const item = document.createElement('li');
+                const pre  = document.createElement('pre');
+
+                item.classList.add('client');
+
+                const parsedData = JSON.parse(message.data);
+
+                pre.textContent = parsedData.message;
+
+                const label = document.createElement('h2');
+
+                label.classList.add('info');
+
+                if (['server', 'outgoing'].indexOf(parsedData.category) > -1) {
+                    item.classList.add('server');
+
+                    label.textContent = 'Server';
+                } else {
+                    item.classList.add('client');
+
+                    label.textContent = 'Client';
+                }
+
+                item.appendChild(label);
+
+                item.appendChild(pre);
+
+                container.appendChild(item);
+
+                container.scrollTop = container.scrollHeight;
+            });
+        </script>
     </body>
 </html>

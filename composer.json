@@ -12,7 +12,11 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.2",
+        "amphp/http-server": "^0.8.3",
+        "amphp/http-server-router": "^1",
+        "amphp/http-server-static-content": "^1.0.1",
         "amphp/socket": "^0.10",
+        "amphp/websocket-server": "dev-master",
         "myclabs/php-enum": "^1.6"
     },
     "require-dev": {

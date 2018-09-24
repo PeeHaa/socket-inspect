@@ -30,14 +30,16 @@ class Server
 
             $this->messageBroker->send(new Start($this->uri));
 
-            /** @var ServerSocket $socket */
-            while ($socket = yield $server->accept()) {
-                asyncCall(function() use ($socket) {
-                    $this->messageBroker->send(new NewClient($socket->getRemoteAddress()));
+            asyncCall(function() use ($server) {
+                /** @var ServerSocket $socket */
+                while ($socket = yield $server->accept()) {
+                    asyncCall(function() use ($socket) {
+                        $this->messageBroker->send(new NewClient($this->uri, $socket->getRemoteAddress()));
 
-                    yield from (new Client($socket, $this->messageBroker))->handleMessages();
-                }, $socket);
-            }
+                        yield from (new Client($this->uri, $socket, $this->messageBroker))->handleMessages();
+                    }, $socket);
+                }
+            });
         });
     }
 }

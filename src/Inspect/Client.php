@@ -11,12 +11,15 @@ use function Amp\asyncCall;
 
 class Client
 {
+    private $server;
+
     private $socket;
 
     private $messageBroker;
 
-    public function __construct(ServerSocket $socket, Broker $messageBroker)
+    public function __construct(string $server, ServerSocket $socket, Broker $messageBroker)
     {
+        $this->server        = $server;
         $this->socket        = $socket;
         $this->messageBroker = $messageBroker;
     }
@@ -24,12 +27,12 @@ class Client
     public function handleMessages(): \Generator
     {
         while (($chunk = yield $this->socket->read()) !== null) {
-            $this->messageBroker->send(new Received($chunk));
+            $this->messageBroker->send(new Received($this->server, $chunk));
 
             $this->send('Well hello there. And welcome to you!');
         }
 
-        $this->messageBroker->send(new ClientDisconnect());
+        $this->messageBroker->send(new ClientDisconnect($this->server));
     }
 
     private function send(string $message): void
@@ -37,7 +40,7 @@ class Client
         asyncCall(function() use ($message) {
             yield $this->socket->write($message);
 
-            $this->messageBroker->send(new Sent($message));
+            $this->messageBroker->send(new Sent($this->server, $message));
         });
     }
 }

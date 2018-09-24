@@ -13,6 +13,13 @@ class WebSocket implements Application
     /** @var Endpoint */
     private $endpoint;
 
+    private $onNewServer;
+
+    public function __construct(callable $onNewServer)
+    {
+        $this->onNewServer = $onNewServer;
+    }
+
     public function onStart(Endpoint $endpoint): void
     {
         $this->endpoint = $endpoint;
@@ -30,7 +37,7 @@ class WebSocket implements Application
 
     public function onData(int $clientId, Message $message)
     {
-        // TODO: Implement onData() method.
+        yield ($this->onNewServer)(yield $message->read());
     }
 
     public function onClose(int $clientId, int $code, string $reason)

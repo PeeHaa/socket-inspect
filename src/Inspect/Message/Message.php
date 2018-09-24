@@ -4,6 +4,8 @@ namespace PeeHaa\SocketInspect\Inspect\Message;
 
 abstract class Message implements \JsonSerializable
 {
+    private $server;
+
     private $category;
 
     private $type;
@@ -14,13 +16,19 @@ abstract class Message implements \JsonSerializable
 
     private $message;
 
-    public function __construct(Category $category, string $type, Severity $severity, string $message)
+    public function __construct(string $server, Category $category, string $type, Severity $severity, string $message)
     {
+        $this->server    = $server;
         $this->category  = $category;
         $this->type      = $type;
         $this->severity  = $severity;
         $this->timestamp = new \DateTimeImmutable();
         $this->message   = $message;
+    }
+
+    public function getServer(): string
+    {
+        return $this->server;
     }
 
     public function getCategory(): Category
@@ -51,6 +59,7 @@ abstract class Message implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return [
+            'server'    => $this->server,
             'category'  => $this->category->getValue(),
             'type'      => $this->type,
             'severity'  => $this->severity->getKey(),

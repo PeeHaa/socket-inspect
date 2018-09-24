@@ -6,8 +6,8 @@ use PeeHaa\SocketInspect\Inspect\Message\Severity;
 
 class NewClient extends Server
 {
-    public function __construct(string $address)
+    public function __construct(string $server, string $address)
     {
-        parent::__construct('newClient', Severity::INFO(), sprintf('Accepted connection from %s', $address));
+        parent::__construct($server, 'newClient', Severity::INFO(), sprintf('Accepted connection from %s', $address));
     }
 }

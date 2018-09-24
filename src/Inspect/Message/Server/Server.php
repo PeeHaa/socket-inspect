@@ -8,8 +8,8 @@ use PeeHaa\SocketInspect\Inspect\Message\Severity;
 
 abstract class Server extends Message
 {
-    public function __construct(string $type, Severity $severity, string $message)
+    public function __construct(string $server, string $type, Severity $severity, string $message)
     {
-        parent::__construct(Category::SERVER(), $type, $severity, $message);
+        parent::__construct($server, Category::SERVER(), $type, $severity, $message);
     }
 }

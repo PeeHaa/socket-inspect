@@ -7,17 +7,19 @@ use function Amp\asyncCall;
 
 class WebSocket implements Broker
 {
-    private $webSocket;
+    private $webSockets = [];
 
-    public function __construct(WebSocketApplication $webSocket)
+    public function registerWebSocket(WebSocketApplication $webSocket): void
     {
-        $this->webSocket = $webSocket;
+        $this->webSockets[] = $webSocket;
     }
 
     public function send(Message $message): void
     {
         asyncCall(function() use ($message) {
-            $this->webSocket->broadcast($message);
+            foreach ($this->webSockets as $webSocket) {
+                $webSocket->broadcast($message);
+            }
         });
     }
 }

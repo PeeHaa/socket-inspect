@@ -6,8 +6,8 @@ use PeeHaa\SocketInspect\Inspect\Message\Severity;
 
 class ClientDisconnect extends Server
 {
-    public function __construct()
+    public function __construct(string $server)
     {
-        parent::__construct('clientDisconnect', Severity::INFO(), 'Client disconnected');
+        parent::__construct($server, 'clientDisconnect', Severity::INFO(), 'Client disconnected');
     }
 }

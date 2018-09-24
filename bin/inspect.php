@@ -13,23 +13,25 @@ use function Amp\Socket\listen;
 
 require_once __DIR__ . '/../bootstrap.php';
 
-$webSocketApplication = new WebSocketApplication();
+Loop::run(static function() {
+    $messageBroker = new \PeeHaa\SocketInspect\Inspect\Message\WebSocket();
 
-$messageBroker = new \PeeHaa\SocketInspect\Inspect\Message\WebSocket($webSocketApplication);
+    $webSocketApplication = new WebSocketApplication(static function($uri) use ($messageBroker) {
+        return (new Server($uri, $messageBroker))->start();
+    });
 
-$router = new Router();
-$router->addRoute('GET', '/live', new Websocket($webSocketApplication));
-$router->setFallback(new DocumentRoot(__DIR__ . '/../public'));
+    $messageBroker->registerWebSocket($webSocketApplication);
 
-$sockets = [
-    listen('0.0.0.0:8080'),
-    listen('[::]:8080'),
-];
+    $router = new Router();
+    $router->addRoute('GET', '/live', new Websocket($webSocketApplication));
+    $router->setFallback(new DocumentRoot(__DIR__ . '/../public'));
 
-$server = new \Amp\Http\Server\Server($sockets, $router, new NullLogger());
+    $sockets = [
+        listen('0.0.0.0:8080'),
+        listen('[::]:8080'),
+    ];
 
-Loop::run(static function() use ($server, $messageBroker) {
+    $server = new \Amp\Http\Server\Server($sockets, $router, new NullLogger());
+
     yield $server->start();
-
-    yield (new Server('tcp://127.0.0.1:2800', $messageBroker))->start();
 });

@@ -10,7 +10,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 Loop::run(function () {
     /** @var Socket $client */
-    $client = yield connect('tcp://127.0.0.1:2800');
+    $client = yield connect('tcp://127.0.0.1:1337');
 
     yield $client->write('Hello there server!');
 

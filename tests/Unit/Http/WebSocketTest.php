@@ -20,7 +20,8 @@ class WebSocketTest extends TestCase
 {
     public function testOnHandshakeReturnsResponse()
     {
-        $webSocket = new WebSocket(function() {});
+        $webSocket = new WebSocket(static function() {
+        });
 
         /** @var MockObject|Client $client */
         $client = $this->createMock(Client::class);
@@ -51,7 +52,7 @@ class WebSocketTest extends TestCase
 
         $message = new Message($inputStream, false);
 
-        Loop::run(function() use ($webSocket, $message) {
+        Loop::run(static function() use ($webSocket, $message) {
             yield from $webSocket->onData(1, $message);
         });
     }
@@ -74,7 +75,8 @@ class WebSocketTest extends TestCase
             })
         ;
 
-        $webSocket = new WebSocket(function() {});
+        $webSocket = new WebSocket(static function() {
+        });
 
         $webSocket->onStart($endpoint);
 

@@ -35,8 +35,6 @@ class WebSocketTest extends TestCase
 
     public function testOnDataPassesDataThroughToTheCallback()
     {
-        $this->markTestSkipped('For some reason this end up being an infinite loop.');
-
         $webSocket = new WebSocket(function($uri) {
             $this->assertSame('The message', $uri);
 
@@ -48,7 +46,7 @@ class WebSocketTest extends TestCase
 
         $inputStream
             ->method('read')
-            ->willReturn(new Success('The message'))
+            ->willReturnOnConsecutiveCalls(new Success('The message'), new Success(null))
         ;
 
         $message = new Message($inputStream, false);

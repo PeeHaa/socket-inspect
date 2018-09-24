@@ -15,9 +15,9 @@ class StdOut implements Broker
 
     private $stdOut;
 
-    public function __construct()
+    public function __construct($stream)
     {
-        $this->stdOut = new ResourceOutputStream(STDOUT);
+        $this->stdOut = new ResourceOutputStream($stream);
     }
 
     public function send(Message $message): void
@@ -32,7 +32,7 @@ class StdOut implements Broker
         return sprintf(
             '%s %s %s::%s %s',
             $this->getSeverityPrefix($message->getSeverity()),
-            $message->getTimestamp()->format('Y-m-d H-i-s.u'),
+            $message->getTimestamp()->format('Y-m-d H:i:s.u'),
             $message->getCategory(),
             $message->getType(),
             $message->getMessage()

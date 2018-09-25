@@ -69,6 +69,18 @@ class Proxy
                     return $server->send($message);
                 });
             });
+
+            asyncCall(function() use ($server, $client) {
+                $server->onClose(function() use ($client) {
+                    $client->close();
+                });
+            });
+
+            asyncCall(function() use ($server, $client) {
+                $client->onClose(function() use ($server) {
+                    $server->close();
+                });
+            });
         });
     }
 }

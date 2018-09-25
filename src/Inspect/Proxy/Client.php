@@ -8,7 +8,6 @@ use PeeHaa\SocketInspect\Inspect\Message\Broker;
 use PeeHaa\SocketInspect\Inspect\Message\Incoming\Received;
 use PeeHaa\SocketInspect\Inspect\Message\Server\ClientDisconnect;
 use function Amp\asyncCall;
-use function Amp\call;
 
 class Client
 {
@@ -19,6 +18,9 @@ class Client
     private $targetSocket;
 
     private $messageBroker;
+
+    /** @var null|callable */
+    private $onCloseCallback;
 
     public function __construct(string $proxyAddress, ServerSocket $clientSocket, Server $targetSocket, Broker $messageBroker)
     {
@@ -36,24 +38,34 @@ class Client
 
                 $this->messageBroker->send(new Received($this->proxyAddress, $chunk));
             }
+
+            $this->doClose();
         });
     }
 
-    public function handleMessages(): Promise
+    private function doClose(): void
     {
-        return call(function() {
-            while (($chunk = yield $this->clientSocket->read()) !== null) {
-                $this->messageBroker->send(new Received($this->proxyAddress, $chunk));
+        $this->messageBroker->send(new ClientDisconnect($this->proxyAddress));
 
-                yield $this->targetSocket->send($chunk);
-            }
+        if ($this->onCloseCallback === null) {
+            return;
+        }
 
-            $this->messageBroker->send(new ClientDisconnect($this->proxyAddress));
-        });
+        ($this->onCloseCallback)();
+    }
+
+    public function onClose(callable $callback)
+    {
+        $this->onCloseCallback = $callback;
     }
 
     public function send($message): Promise
     {
         return $this->clientSocket->write($message);
+    }
+
+    public function close(): void
+    {
+        $this->clientSocket->close();
     }
 }

@@ -42,7 +42,10 @@ class WebSocket implements Application
     public function onData(int $clientId, Message $message)
     {
         // phpcs:ignore SlevomatCodingStandard.ControlStructures.ControlStructureSpacing.IncorrectLinesCountBeforeControlStructure
-        yield ($this->onNewServer)(yield $message->read());
+        $data = json_decode(yield $message->read(), true);
+
+        // phpcs:ignore SlevomatCodingStandard.ControlStructures.ControlStructureSpacing.IncorrectLinesCountBeforeControlStructure
+        yield ($this->onNewServer)($data['proxy_address'],$data['server_address']);
     }
 
     // phpcs:ignore SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter

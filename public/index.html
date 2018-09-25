@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
         <style>
             * {
                 box-sizing: border-box;
@@ -49,11 +50,63 @@
                 width: 250px;
             }
 
+            aside li.new .uri {
+                overflow: hidden;
+            }
+
+            aside li.new .uri:first-child {
+                border-bottom: 1px solid #d4d4d4;
+            }
+
             aside li.new input[type="text"] {
                 line-height: 50px;
                 color: rgb(36,37,37);
                 padding: 0 25px;
-                width: 100%;
+                width: 200px;
+                float: left;
+                border: 0;
+            }
+
+            aside li.new .checkbox {
+                height: 50px;
+                width: 50px;
+                background: white;
+                display: block;
+                float: right;
+                padding: 15px;
+            }
+
+            aside li.new .checkbox input {
+                display: none;
+            }
+
+            aside li.new .checkbox .container {
+                border: 1px solid #d4d4d4;
+                width: 20px;
+                height: 20px;
+                padding: 2px;
+            }
+
+            aside li.new .checkbox .container .body {
+                width: 14px;
+                height: 14px;
+            }
+
+            aside li.new .checkbox:hover .container .body {
+                background: #d4d4d4;
+                width: 14px;
+                height: 14px;
+            }
+
+            aside li.new .checkbox input:checked ~ .container .body {
+                background: #242525;
+            }
+
+            aside li.new .checkbox .container .body i {
+                font-size: 11px;
+                position: relative;
+                top: -2px;
+                left: 2px;
             }
 
             aside li.new input[type="submit"] {
@@ -103,6 +156,8 @@
 
             main .console {
                 display: none;
+                max-height: 100%;
+                height: 100%;
             }
 
             main .console.active {
@@ -125,6 +180,7 @@
             main ul {
                 overflow-y: auto;
                 max-height: calc(100% - 50px);
+                height: calc(100% - 50px);
             }
 
             main li {
@@ -164,8 +220,21 @@
             <ul>
                 <li class="new">
                     <form action="#">
-                        <input type="text" name="uri" placeholder="tcp://127.0.0.1:1337">
-                        <input type="submit" value="Start new server">
+                        <div class="uri">
+                            <input type="text" name="proxy_address" placeholder="Proxy address">
+                            <label class="checkbox">
+                                <input type="checkbox" name="crypto1">
+                                <div class="container"><div class="body"><i class="fa fa-lock"></i></div></div>
+                            </label>
+                        </div>
+                        <div class="uri">
+                            <input type="text" name="server_address" placeholder="Target address">
+                            <label class="checkbox">
+                                <input type="checkbox" name="crypto1">
+                                <div class="container"><div class="body"><i class="fa fa-lock"></i></div></div>
+                            </label>
+                        </div>
+                        <input type="submit" value="Start new proxy">
                     </form>
                 </li>
             </ul>
@@ -182,7 +251,10 @@
                 document.querySelector('li.new form').addEventListener('submit', function(e) {
                     e.preventDefault();
 
-                    connection.send(document.querySelector('li.new form input[type="text"]').value);
+                    connection.send(JSON.stringify({
+                        proxy_address: document.querySelector('li.new form input[name="proxy_address"]').value,
+                        server_address: document.querySelector('li.new form input[name="server_address"]').value
+                    }));
                 });
             });
 

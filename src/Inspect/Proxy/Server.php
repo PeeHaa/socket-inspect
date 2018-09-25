@@ -2,13 +2,12 @@
 
 namespace PeeHaa\SocketInspect\Inspect\Proxy;
 
-use function Amp\asyncCall;
 use Amp\Promise;
 use Amp\Socket\ClientSocket;
-use Amp\Socket\ServerSocket;
 use PeeHaa\SocketInspect\Inspect\Message\Broker;
 use PeeHaa\SocketInspect\Inspect\Message\Outgoing\Sent;
 use PeeHaa\SocketInspect\Inspect\Message\Server\NewTarget;
+use function Amp\asyncCall;
 use function Amp\call;
 use function Amp\Socket\cryptoConnect;
 
@@ -41,16 +40,19 @@ class Server
         });
     }
 
-    public function send(string $message, ServerSocket $clientSocket)
+    public function onReceived(callable $callback): void
     {
-        yield $this->socket->write($message);
-
-        asyncCall(function() use ($clientSocket) {
+        asyncCall(function() use ($callback) {
             while (($chunk = yield $this->socket->read()) !== null) {
-                yield $clientSocket->write($chunk);
+                yield $callback($chunk);
 
                 $this->messageBroker->send(new Sent($this->proxyAddress, $chunk));
             }
         });
+    }
+
+    public function send(string $message): Promise
+    {
+        return $this->socket->write($message);
     }
 }

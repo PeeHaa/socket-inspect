@@ -2,10 +2,13 @@
 
 namespace PeeHaa\SocketInspect\Inspect\Proxy;
 
+use Amp\Promise;
 use Amp\Socket\ServerSocket;
 use PeeHaa\SocketInspect\Inspect\Message\Broker;
 use PeeHaa\SocketInspect\Inspect\Message\Incoming\Received;
 use PeeHaa\SocketInspect\Inspect\Message\Server\ClientDisconnect;
+use function Amp\asyncCall;
+use function Amp\call;
 
 class Client
 {
@@ -25,14 +28,32 @@ class Client
         $this->messageBroker = $messageBroker;
     }
 
-    public function handleMessages(): \Generator // @todo convert to promise
+    public function onReceived(callable $callback): void
     {
-        while (($chunk = yield $this->clientSocket->read()) !== null) {
-            $this->messageBroker->send(new Received($this->proxyAddress, $chunk));
+        asyncCall(function() use ($callback) {
+            while (($chunk = yield $this->clientSocket->read()) !== null) {
+                yield $callback($chunk);
 
-            yield from $this->targetSocket->send($chunk, $this->clientSocket);
-        }
+                $this->messageBroker->send(new Received($this->proxyAddress, $chunk));
+            }
+        });
+    }
 
-        $this->messageBroker->send(new ClientDisconnect($this->proxyAddress));
+    public function handleMessages(): Promise
+    {
+        return call(function() {
+            while (($chunk = yield $this->clientSocket->read()) !== null) {
+                $this->messageBroker->send(new Received($this->proxyAddress, $chunk));
+
+                yield $this->targetSocket->send($chunk);
+            }
+
+            $this->messageBroker->send(new ClientDisconnect($this->proxyAddress));
+        });
+    }
+
+    public function send($message): Promise
+    {
+        return $this->clientSocket->write($message);
     }
 }

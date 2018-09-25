@@ -39,19 +39,36 @@ class Proxy
         });
     }
 
-    private function processClients(Server $server): void // use call and return a promise?
+    private function processClients(Server $server): void
     {
         asyncCall(function() use ($server) {
             /** @var ServerSocket $socket */
             while ($socket = yield $server->accept()) {
-                asyncCall(function() use ($socket) {
-                    $this->messageBroker->send(new NewClient($this->proxyAddress, $socket->getRemoteAddress()));
-
-                    $server = yield (new TargetServer($this->proxyAddress, $this->targetAddress, $this->messageBroker))->start();
-
-                    yield from (new Client($this->proxyAddress, $socket, $server, $this->messageBroker))->handleMessages();
-                }, $socket);
+                $this->processClient($socket);
             }
+        });
+    }
+
+    private function processClient(ServerSocket $clientSocket): void
+    {
+        asyncCall(function() use ($clientSocket) {
+            $this->messageBroker->send(new NewClient($this->proxyAddress, $clientSocket->getRemoteAddress()));
+
+            /** @var \PeeHaa\SocketInspect\Inspect\Proxy\Server $server */
+            $server = yield (new TargetServer($this->proxyAddress, $this->targetAddress, $this->messageBroker))->start();
+            $client = new Client($this->proxyAddress, $clientSocket, $server, $this->messageBroker);
+
+            asyncCall(function() use ($server, $client) {
+                $server->onReceived(function($message) use ($client) {
+                    return $client->send($message);
+                });
+            });
+
+            asyncCall(function() use ($server, $client) {
+                $client->onReceived(function($message) use ($server) {
+                    return $server->send($message);
+                });
+            });
         });
     }
 }

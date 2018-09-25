@@ -20,10 +20,10 @@ class Server
 
     private $messageBroker;
 
-    /** @var null|ClientSocket */
+    /** @var ClientSocket|null */
     private $socket;
 
-    /** @var null|callable */
+    /** @var \Closure|null */
     private $onCloseCallback;
 
     public function __construct(string $proxyAddress, string $targetAddress, Broker $messageBroker)
@@ -44,7 +44,7 @@ class Server
         });
     }
 
-    public function onReceived(callable $callback): void
+    public function onReceived(\Closure $callback): void
     {
         asyncCall(function() use ($callback) {
             while (($chunk = yield $this->socket->read()) !== null) {
@@ -68,7 +68,7 @@ class Server
         ($this->onCloseCallback)();
     }
 
-    public function onClose(callable $callback)
+    public function onClose(\Closure $callback)
     {
         $this->onCloseCallback = $callback;
     }

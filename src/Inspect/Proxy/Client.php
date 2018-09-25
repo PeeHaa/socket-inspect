@@ -15,22 +15,19 @@ class Client
 
     private $clientSocket;
 
-    private $targetSocket;
-
     private $messageBroker;
 
-    /** @var null|callable */
+    /** @var \Closure|null */
     private $onCloseCallback;
 
-    public function __construct(string $proxyAddress, ServerSocket $clientSocket, Server $targetSocket, Broker $messageBroker)
+    public function __construct(string $proxyAddress, ServerSocket $clientSocket, Broker $messageBroker)
     {
         $this->proxyAddress  = $proxyAddress;
         $this->clientSocket  = $clientSocket;
-        $this->targetSocket  = $targetSocket;
         $this->messageBroker = $messageBroker;
     }
 
-    public function onReceived(callable $callback): void
+    public function onReceived(\Closure $callback): void
     {
         asyncCall(function() use ($callback) {
             while (($chunk = yield $this->clientSocket->read()) !== null) {
@@ -54,7 +51,7 @@ class Client
         ($this->onCloseCallback)();
     }
 
-    public function onClose(callable $callback)
+    public function onClose(\Closure $callback)
     {
         $this->onCloseCallback = $callback;
     }

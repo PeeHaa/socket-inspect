@@ -2,6 +2,7 @@
 
 namespace PeeHaa\SocketInspect\Inspect\Proxy;
 
+use Amp\ByteStream\StreamException;
 use Amp\Promise;
 use Amp\Socket\Server;
 use Amp\Socket\ServerSocket;
@@ -54,26 +55,21 @@ class Proxy
         asyncCall(function() use ($clientSocket) {
             $this->messageBroker->send(new NewClient($this->proxyAddress, $clientSocket->getRemoteAddress()));
 
-            /** @var \PeeHaa\SocketInspect\Inspect\Proxy\Server $server */
+            /** @var TargetServer $server */
             $server = yield (new TargetServer($this->proxyAddress, $this->targetAddress, $this->messageBroker))->start();
-            $client = new Client($this->proxyAddress, $clientSocket, $server, $this->messageBroker);
+            $client = new Client($this->proxyAddress, $clientSocket, $this->messageBroker);
 
-            asyncCall(function() use ($server, $client) {
-                $server->onReceived(function($message) use ($client) {
-                    return $client->send($message);
-                });
+            asyncCall(static function() use ($server, $client) {
+                try {
+                    $server->onReceived(\Closure::fromCallable([$client, 'send']));
+                    $client->onReceived(\Closure::fromCallable([$server, 'send']));
 
-                $client->onReceived(function($message) use ($server) {
-                    return $server->send($message);
-                });
-
-                $server->onClose(function() use ($client) {
-                    $client->close();
-                });
-
-                $client->onClose(function() use ($server) {
-                    $server->close();
-                });
+                    $server->onClose(\Closure::fromCallable([$client, 'close']));
+                    $client->onClose(\Closure::fromCallable([$server, 'close']));
+                } catch (StreamException $e) {
+                    // we catch and silence writing to closed connections here
+                    // as it seems it's normal operation?
+                }
             });
         });
     }

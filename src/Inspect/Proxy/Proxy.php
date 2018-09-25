@@ -62,21 +62,15 @@ class Proxy
                 $server->onReceived(function($message) use ($client) {
                     return $client->send($message);
                 });
-            });
 
-            asyncCall(function() use ($server, $client) {
                 $client->onReceived(function($message) use ($server) {
                     return $server->send($message);
                 });
-            });
 
-            asyncCall(function() use ($server, $client) {
                 $server->onClose(function() use ($client) {
                     $client->close();
                 });
-            });
 
-            asyncCall(function() use ($server, $client) {
                 $client->onClose(function() use ($server) {
                     $server->close();
                 });

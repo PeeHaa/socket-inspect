@@ -4,9 +4,9 @@ namespace PeeHaa\SocketInspect\Proxy;
 
 use Amp\Promise;
 use Amp\Socket\ClientSocket;
-use PeeHaa\SocketInspect\Inspect\Message\ConnectedToServer;
-use PeeHaa\SocketInspect\Inspect\Message\DisconnectedFromServer;
-use PeeHaa\SocketInspect\Inspect\Message\ServerSent;
+use PeeHaa\SocketInspect\Message\ConnectedToServer;
+use PeeHaa\SocketInspect\Message\DisconnectedFromServer;
+use PeeHaa\SocketInspect\Message\ServerSent;
 use PeeHaa\SocketInspect\MessageBroker\Broker;
 use function Amp\asyncCall;
 use function Amp\call;

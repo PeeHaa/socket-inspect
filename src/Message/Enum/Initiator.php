@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace PeeHaa\SocketInspect\Inspect\Message\Enum;
+namespace PeeHaa\SocketInspect\Message\Enum;
 
 use MyCLabs\Enum\Enum;
 

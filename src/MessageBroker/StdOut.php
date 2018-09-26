@@ -3,8 +3,7 @@
 namespace PeeHaa\SocketInspect\MessageBroker;
 
 use Amp\ByteStream\ResourceOutputStream;
-use PeeHaa\SocketInspect\Inspect\Message\Message;
-use PeeHaa\SocketInspect\Inspect\Message\Severity;
+use PeeHaa\SocketInspect\Message\Message;
 use function Amp\asyncCall;
 
 class StdOut implements Broker

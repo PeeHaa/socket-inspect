@@ -3,7 +3,7 @@
 namespace PeeHaa\SocketInspect\MessageBroker;
 
 use PeeHaa\SocketInspect\Http\WebSocket as WebSocketApplication;
-use PeeHaa\SocketInspect\Inspect\Message\Message;
+use PeeHaa\SocketInspect\Message\Message;
 use function Amp\asyncCall;
 
 class WebSocket implements Broker

@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace PeeHaa\SocketInspect\Inspect\Message;
+namespace PeeHaa\SocketInspect\Message;
 
-use PeeHaa\SocketInspect\Inspect\Message\Enum\Initiator;
+use PeeHaa\SocketInspect\Message\Enum\Initiator;
 
 abstract class Message implements \JsonSerializable
 {

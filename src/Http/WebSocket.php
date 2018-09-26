@@ -7,7 +7,7 @@ use Amp\Http\Server\Response;
 use Amp\Http\Server\Websocket\Application;
 use Amp\Http\Server\Websocket\Endpoint;
 use Amp\Http\Server\Websocket\Message;
-use PeeHaa\SocketInspect\Inspect\Message\Message as TransactionMessage;
+use PeeHaa\SocketInspect\Message\Message as TransactionMessage;
 
 class WebSocket implements Application
 {

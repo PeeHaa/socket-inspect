@@ -223,14 +223,14 @@
                         <div class="uri">
                             <input type="text" name="proxy_address" placeholder="Proxy address">
                             <label class="checkbox">
-                                <input type="checkbox" name="crypto1">
+                                <input type="checkbox" name="proxy_encrypted">
                                 <div class="container"><div class="body"><i class="fa fa-lock"></i></div></div>
                             </label>
                         </div>
                         <div class="uri">
-                            <input type="text" name="server_address" placeholder="Target address">
+                            <input type="text" name="server_address" placeholder="Server address">
                             <label class="checkbox">
-                                <input type="checkbox" name="crypto1">
+                                <input type="checkbox" name="server_encrypted">
                                 <div class="container"><div class="body"><i class="fa fa-lock"></i></div></div>
                             </label>
                         </div>
@@ -248,26 +248,26 @@
             });
 
             connection.addEventListener('open', function() {
-                console.warn('ws opened');
                 document.querySelector('li.new form').addEventListener('submit', function(e) {
                     e.preventDefault();
 
                     connection.send(JSON.stringify({
                         proxy_address: document.querySelector('li.new form input[name="proxy_address"]').value,
-                        server_address: document.querySelector('li.new form input[name="server_address"]').value
+                        proxy_encrypted: false,
+                        server_address: document.querySelector('li.new form input[name="server_address"]').value,
+                        server_encrypted: document.querySelector('li.new form input[name="server_encrypted"]').checked
                     }));
                 });
             });
 
             function handleNewMessage(message) {
-                console.warn('processing message');
                 const container = getConsole(message.server);
                 const list      = container.querySelector('ul');
                 const item      = document.createElement('li');
                 const pre       = document.createElement('pre');
 
                 item.classList.add('client');
-console.log(message);
+
                 pre.textContent = message.message;
 
                 const label = document.createElement('h2');

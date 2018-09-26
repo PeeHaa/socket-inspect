@@ -2,7 +2,7 @@
 
 namespace PeeHaa\SocketInspect\MessageBroker;
 
-use PeeHaa\SocketInspect\Inspect\Message\Message;
+use PeeHaa\SocketInspect\Message\Message;
 
 interface Broker
 {

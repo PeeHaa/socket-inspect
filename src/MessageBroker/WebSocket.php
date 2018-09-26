@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace PeeHaa\SocketInspect\Inspect\Message;
+namespace PeeHaa\SocketInspect\MessageBroker;
 
 use PeeHaa\SocketInspect\Http\WebSocket as WebSocketApplication;
+use PeeHaa\SocketInspect\Inspect\Message\Message;
 use function Amp\asyncCall;
 
 class WebSocket implements Broker
@@ -17,6 +18,7 @@ class WebSocket implements Broker
     public function send(Message $message): void
     {
         asyncCall(function() use ($message) {
+            /** @var WebSocketApplication $webSocket */
             foreach ($this->webSockets as $webSocket) {
                 $webSocket->broadcast($message);
             }

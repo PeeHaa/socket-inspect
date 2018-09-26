@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace PeeHaa\SocketInspect\Inspect\Message;
+namespace PeeHaa\SocketInspect\MessageBroker;
+
+use PeeHaa\SocketInspect\Inspect\Message\Message;
 
 interface Broker
 {

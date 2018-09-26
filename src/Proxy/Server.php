@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace PeeHaa\SocketInspect\Inspect\Proxy;
+namespace PeeHaa\SocketInspect\Proxy;
 
 use Amp\Promise;
 use Amp\Socket\ClientSocket;
-use PeeHaa\SocketInspect\Inspect\Message\Broker;
-use PeeHaa\SocketInspect\Inspect\Message\Outgoing\Sent;
-use PeeHaa\SocketInspect\Inspect\Message\Server\NewTarget;
-use PeeHaa\SocketInspect\Inspect\Message\Server\ServerDisconnected;
+use PeeHaa\SocketInspect\Inspect\Message\ConnectedToServer;
+use PeeHaa\SocketInspect\Inspect\Message\DisconnectedFromServer;
+use PeeHaa\SocketInspect\Inspect\Message\ServerSent;
+use PeeHaa\SocketInspect\MessageBroker\Broker;
 use function Amp\asyncCall;
 use function Amp\call;
 use function Amp\Socket\cryptoConnect;
@@ -16,7 +16,9 @@ class Server
 {
     private $proxyAddress;
 
-    private $targetAddress;
+    private $serverAddress;
+
+    private $clientAddress;
 
     private $messageBroker;
 
@@ -26,19 +28,24 @@ class Server
     /** @var \Closure|null */
     private $onCloseCallback;
 
-    public function __construct(string $proxyAddress, string $targetAddress, Broker $messageBroker)
-    {
+    public function __construct(
+        string $proxyAddress,
+        string $serverAddress,
+        string $clientAddress,
+        Broker $messageBroker
+    ) {
         $this->proxyAddress  = $proxyAddress;
-        $this->targetAddress = $targetAddress;
+        $this->serverAddress = $serverAddress;
+        $this->clientAddress = $clientAddress;
         $this->messageBroker = $messageBroker;
     }
 
     public function start(): Promise
     {
         return call(function() {
-            $this->socket = yield cryptoConnect($this->targetAddress);
+            $this->socket = yield cryptoConnect($this->serverAddress);
 
-            $this->messageBroker->send(new NewTarget($this->proxyAddress, $this->targetAddress));
+            $this->messageBroker->send(new ConnectedToServer($this->proxyAddress, $this->serverAddress, $this->clientAddress));
 
             return $this;
         });
@@ -50,7 +57,7 @@ class Server
             while (($chunk = yield $this->socket->read()) !== null) {
                 yield $callback($chunk);
 
-                $this->messageBroker->send(new Sent($this->proxyAddress, $chunk));
+                $this->messageBroker->send(new ServerSent($this->proxyAddress, $chunk));
             }
 
             $this->doClose();
@@ -59,7 +66,9 @@ class Server
 
     private function doClose(): void
     {
-        $this->messageBroker->send(new ServerDisconnected($this->proxyAddress));
+        $this->messageBroker->send(
+            new DisconnectedFromServer($this->proxyAddress, $this->serverAddress, $this->clientAddress)
+        );
 
         if ($this->onCloseCallback === null) {
             return;

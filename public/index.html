@@ -248,6 +248,7 @@
             });
 
             connection.addEventListener('open', function() {
+                console.warn('ws opened');
                 document.querySelector('li.new form').addEventListener('submit', function(e) {
                     e.preventDefault();
 
@@ -259,20 +260,25 @@
             });
 
             function handleNewMessage(message) {
+                console.warn('processing message');
                 const container = getConsole(message.server);
                 const list      = container.querySelector('ul');
                 const item      = document.createElement('li');
                 const pre       = document.createElement('pre');
 
                 item.classList.add('client');
-
+console.log(message);
                 pre.textContent = message.message;
 
                 const label = document.createElement('h2');
 
                 label.classList.add('info');
 
-                if (['server', 'outgoing'].indexOf(message.category) > -1) {
+                if (message.initiator === 'proxy') {
+                    item.classList.add('proxy');
+
+                    label.textContent = 'Proxy';
+                } else if (message.initiator === 'server') {
                     item.classList.add('server');
 
                     label.textContent = 'Server';

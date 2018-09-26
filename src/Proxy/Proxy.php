@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace PeeHaa\SocketInspect\Inspect\Proxy;
+namespace PeeHaa\SocketInspect\Proxy;
 
 use Amp\ByteStream\StreamException;
 use Amp\Promise;
 use Amp\Socket\Server;
 use Amp\Socket\ServerSocket;
-use PeeHaa\SocketInspect\Inspect\Message\Broker;
-use PeeHaa\SocketInspect\Inspect\Message\Server\NewClient;
-use PeeHaa\SocketInspect\Inspect\Message\Server\Start;
-use PeeHaa\SocketInspect\Inspect\Proxy\Server as TargetServer;
+use PeeHaa\SocketInspect\Inspect\Message\ClientConnected;
+use PeeHaa\SocketInspect\Inspect\Message\ProxyStarted;
+use PeeHaa\SocketInspect\MessageBroker\Broker;
+use PeeHaa\SocketInspect\Proxy\Server as TargetServer;
 use function Amp\asyncCall;
 use function Amp\call;
 use function Amp\Socket\listen;
@@ -34,7 +34,7 @@ class Proxy
         return call(function() {
             $proxy = listen($this->proxyAddress);
 
-            $this->messageBroker->send(new Start($this->proxyAddress));
+            $this->messageBroker->send(new ProxyStarted($this->proxyAddress));
 
             $this->processClients($proxy);
         });
@@ -53,10 +53,16 @@ class Proxy
     private function processClient(ServerSocket $clientSocket): void
     {
         asyncCall(function() use ($clientSocket) {
-            $this->messageBroker->send(new NewClient($this->proxyAddress, $clientSocket->getRemoteAddress()));
+            $this->messageBroker->send(new ClientConnected($this->proxyAddress, $clientSocket->getRemoteAddress()));
 
             /** @var TargetServer $server */
-            $server = yield (new TargetServer($this->proxyAddress, $this->targetAddress, $this->messageBroker))->start();
+            $server = yield (new TargetServer(
+                $this->proxyAddress,
+                $this->targetAddress,
+                $clientSocket->getRemoteAddress(),
+                $this->messageBroker
+            ))->start();
+
             $client = new Client($this->proxyAddress, $clientSocket, $this->messageBroker);
 
             asyncCall(static function() use ($server, $client) {

@@ -2,26 +2,22 @@
 
 namespace PeeHaa\SocketInspect\Inspect\Message;
 
+use PeeHaa\SocketInspect\Inspect\Message\Enum\Initiator;
+
 abstract class Message implements \JsonSerializable
 {
     private $server;
 
-    private $category;
-
-    private $type;
-
-    private $severity;
+    private $initiator;
 
     private $timestamp;
 
     private $message;
 
-    public function __construct(string $server, Category $category, string $type, Severity $severity, string $message)
+    public function __construct(string $server, Initiator $initiator, string $message)
     {
         $this->server    = $server;
-        $this->category  = $category;
-        $this->type      = $type;
-        $this->severity  = $severity;
+        $this->initiator = $initiator;
         $this->timestamp = new \DateTimeImmutable();
         $this->message   = $message;
     }
@@ -31,19 +27,9 @@ abstract class Message implements \JsonSerializable
         return $this->server;
     }
 
-    public function getCategory(): Category
+    public function getInitiator(): Initiator
     {
-        return $this->category;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function getSeverity(): Severity
-    {
-        return $this->severity;
+        return $this->initiator;
     }
 
     public function getTimestamp(): \DateTimeImmutable
@@ -60,9 +46,7 @@ abstract class Message implements \JsonSerializable
     {
         return [
             'server'    => $this->server,
-            'category'  => $this->category->getValue(),
-            'type'      => $this->type,
-            'severity'  => $this->severity->getKey(),
+            'initiator' => $this->initiator->getValue(),
             'timestamp' => $this->timestamp->format('Y-m-d H:i:s.u'),
             'message'   => $this->message,
         ];

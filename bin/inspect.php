@@ -8,8 +8,8 @@ use Amp\Http\Server\StaticContent\DocumentRoot;
 use Amp\Http\Server\Websocket\Websocket as AmpWebSocket;
 use Amp\Loop;
 use PeeHaa\SocketInspect\Http\WebSocket as WebSocketApplication;
-use PeeHaa\SocketInspect\Inspect\Message\WebSocket as WebSocketMessageBroker;
-use PeeHaa\SocketInspect\Inspect\Proxy\Proxy;
+use PeeHaa\SocketInspect\MessageBroker\WebSocket as WebSocketMessageBroker;
+use PeeHaa\SocketInspect\Proxy\Proxy;
 use Psr\Log\NullLogger;
 use function Amp\Socket\listen;
 

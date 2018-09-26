@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace PeeHaa\SocketInspect\Inspect\Proxy;
+namespace PeeHaa\SocketInspect\Proxy;
 
 use Amp\Promise;
 use Amp\Socket\ServerSocket;
-use PeeHaa\SocketInspect\Inspect\Message\Broker;
-use PeeHaa\SocketInspect\Inspect\Message\Incoming\Received;
-use PeeHaa\SocketInspect\Inspect\Message\Server\ClientDisconnect;
+use PeeHaa\SocketInspect\Inspect\Message\ClientDisconnected;
+use PeeHaa\SocketInspect\Inspect\Message\ClientSent;
+use PeeHaa\SocketInspect\MessageBroker\Broker;
 use function Amp\asyncCall;
 
 class Client
@@ -14,6 +14,8 @@ class Client
     private $proxyAddress;
 
     private $clientSocket;
+
+    private $clientAddress;
 
     private $messageBroker;
 
@@ -24,6 +26,7 @@ class Client
     {
         $this->proxyAddress  = $proxyAddress;
         $this->clientSocket  = $clientSocket;
+        $this->clientAddress = $clientSocket->getRemoteAddress();
         $this->messageBroker = $messageBroker;
     }
 
@@ -33,7 +36,7 @@ class Client
             while (($chunk = yield $this->clientSocket->read()) !== null) {
                 yield $callback($chunk);
 
-                $this->messageBroker->send(new Received($this->proxyAddress, $chunk));
+                $this->messageBroker->send(new ClientSent($this->proxyAddress, $chunk));
             }
 
             $this->doClose();
@@ -42,7 +45,7 @@ class Client
 
     private function doClose(): void
     {
-        $this->messageBroker->send(new ClientDisconnect($this->proxyAddress));
+        $this->messageBroker->send(new ClientDisconnected($this->proxyAddress, $this->clientAddress));
 
         if ($this->onCloseCallback === null) {
             return;

@@ -1,8 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace PeeHaa\SocketInspect\Inspect\Message;
+namespace PeeHaa\SocketInspect\MessageBroker;
 
 use Amp\ByteStream\ResourceOutputStream;
+use PeeHaa\SocketInspect\Inspect\Message\Message;
+use PeeHaa\SocketInspect\Inspect\Message\Severity;
 use function Amp\asyncCall;
 
 class StdOut implements Broker

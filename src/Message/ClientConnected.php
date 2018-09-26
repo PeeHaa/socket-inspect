@@ -3,11 +3,16 @@
 namespace PeeHaa\SocketInspect\Message;
 
 use PeeHaa\SocketInspect\Message\Enum\Initiator;
+use PeeHaa\SocketInspect\Proxy\Address;
 
 class ClientConnected extends Message
 {
-    public function __construct(string $proxyAddress, string $clientAddress)
+    public function __construct(Address $proxyAddress, string $clientAddress)
     {
-        parent::__construct($proxyAddress, Initiator::PROXY(), sprintf('Client (%s) connected', $clientAddress));
+        parent::__construct(
+            $proxyAddress->getAddress(),
+            Initiator::PROXY(),
+            sprintf('Client (%s) connected', $clientAddress)
+        );
     }
 }

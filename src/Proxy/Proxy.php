@@ -18,21 +18,21 @@ class Proxy
 {
     private $proxyAddress;
 
-    private $targetAddress;
+    private $serverAddress;
 
     private $messageBroker;
 
-    public function __construct(string $proxyAddress, string $targetAddress, Broker $messageBroker)
+    public function __construct(Address $proxyAddress, Address $serverAddress, Broker $messageBroker)
     {
         $this->proxyAddress  = $proxyAddress;
-        $this->targetAddress = $targetAddress;
+        $this->serverAddress = $serverAddress;
         $this->messageBroker = $messageBroker;
     }
 
     public function start(): Promise
     {
         return call(function() {
-            $proxy = listen($this->proxyAddress);
+            $proxy = listen($this->proxyAddress->getAddress());
 
             $this->messageBroker->send(new ProxyStarted($this->proxyAddress));
 
@@ -58,7 +58,7 @@ class Proxy
             /** @var TargetServer $server */
             $server = yield (new TargetServer(
                 $this->proxyAddress,
-                $this->targetAddress,
+                $this->serverAddress,
                 $clientSocket->getRemoteAddress(),
                 $this->messageBroker
             ))->start();

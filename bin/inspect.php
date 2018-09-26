@@ -9,6 +9,7 @@ use Amp\Http\Server\Websocket\Websocket as AmpWebSocket;
 use Amp\Loop;
 use PeeHaa\SocketInspect\Http\WebSocket as WebSocketApplication;
 use PeeHaa\SocketInspect\MessageBroker\WebSocket as WebSocketMessageBroker;
+use PeeHaa\SocketInspect\Proxy\Address;
 use PeeHaa\SocketInspect\Proxy\Proxy;
 use Psr\Log\NullLogger;
 use function Amp\Socket\listen;
@@ -18,7 +19,7 @@ require_once __DIR__ . '/../bootstrap.php';
 Loop::run(static function() {
     $messageBroker = new WebSocketMessageBroker();
 
-    $webSocketApplication = new WebSocketApplication(static function($proxyAddress, $serverAddress) use ($messageBroker) {
+    $webSocketApplication = new WebSocketApplication(static function(Address $proxyAddress, Address $serverAddress) use ($messageBroker) {
         return (new Proxy($proxyAddress, $serverAddress, $messageBroker))->start();
     });
 

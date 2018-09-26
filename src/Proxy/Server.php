@@ -10,6 +10,7 @@ use PeeHaa\SocketInspect\Message\ServerSent;
 use PeeHaa\SocketInspect\MessageBroker\Broker;
 use function Amp\asyncCall;
 use function Amp\call;
+use function Amp\Socket\connect;
 use function Amp\Socket\cryptoConnect;
 
 class Server
@@ -29,8 +30,8 @@ class Server
     private $onCloseCallback;
 
     public function __construct(
-        string $proxyAddress,
-        string $serverAddress,
+        Address $proxyAddress,
+        Address $serverAddress,
         string $clientAddress,
         Broker $messageBroker
     ) {
@@ -43,7 +44,11 @@ class Server
     public function start(): Promise
     {
         return call(function() {
-            $this->socket = yield cryptoConnect($this->serverAddress);
+            if ($this->serverAddress->isEncrypted()) {
+                $this->socket = yield cryptoConnect($this->serverAddress->getAddress());
+            } else {
+                $this->socket = yield connect($this->serverAddress->getAddress());
+            }
 
             $this->messageBroker->send(new ConnectedToServer($this->proxyAddress, $this->serverAddress, $this->clientAddress));
 

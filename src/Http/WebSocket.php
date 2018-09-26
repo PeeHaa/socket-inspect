@@ -8,6 +8,7 @@ use Amp\Http\Server\Websocket\Application;
 use Amp\Http\Server\Websocket\Endpoint;
 use Amp\Http\Server\Websocket\Message;
 use PeeHaa\SocketInspect\Message\Message as TransactionMessage;
+use PeeHaa\SocketInspect\Proxy\Address;
 
 class WebSocket implements Application
 {
@@ -44,8 +45,11 @@ class WebSocket implements Application
         // phpcs:ignore SlevomatCodingStandard.ControlStructures.ControlStructureSpacing.IncorrectLinesCountBeforeControlStructure
         $data = json_decode(yield $message->read(), true);
 
+        $proxyAddress  = new Address($data['proxy_address'], $data['proxy_encrypted']);
+        $serverAddress = new Address($data['server_address'], $data['server_encrypted']);
+
         // phpcs:ignore SlevomatCodingStandard.ControlStructures.ControlStructureSpacing.IncorrectLinesCountBeforeControlStructure
-        yield ($this->onNewServer)($data['proxy_address'], $data['server_address']);
+        yield ($this->onNewServer)($proxyAddress, $serverAddress);
     }
 
     // phpcs:ignore SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter

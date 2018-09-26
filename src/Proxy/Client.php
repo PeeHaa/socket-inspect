@@ -22,7 +22,7 @@ class Client
     /** @var \Closure|null */
     private $onCloseCallback;
 
-    public function __construct(string $proxyAddress, ServerSocket $clientSocket, Broker $messageBroker)
+    public function __construct(Address $proxyAddress, ServerSocket $clientSocket, Broker $messageBroker)
     {
         $this->proxyAddress  = $proxyAddress;
         $this->clientSocket  = $clientSocket;

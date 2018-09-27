@@ -2,7 +2,6 @@
 
 namespace PeeHaa\SocketInspect\Proxy;
 
-use Amp\ByteStream\StreamException;
 use Amp\Promise;
 use Amp\Socket\Server;
 use Amp\Socket\ServerSocket;

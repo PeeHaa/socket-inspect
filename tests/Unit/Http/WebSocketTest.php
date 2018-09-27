@@ -11,7 +11,8 @@ use Amp\Http\Server\Websocket\Message;
 use Amp\Loop;
 use Amp\Success;
 use PeeHaa\SocketInspect\Http\WebSocket;
-use PeeHaa\SocketInspect\Inspect\Message\Message as TransactionMessage;
+use PeeHaa\SocketInspect\Message\Message as TransactionMessage;
+use PeeHaa\SocketInspect\Proxy\Address;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
@@ -36,8 +37,11 @@ class WebSocketTest extends TestCase
 
     public function testOnDataPassesDataThroughToTheCallback()
     {
-        $webSocket = new WebSocket(function($uri) {
-            $this->assertSame('The message', $uri);
+        $webSocket = new WebSocket(function(Address $proxyAddress, Address $serverAddress) {
+            $this->assertSame('tcp://127.0.0.1:1337', $proxyAddress->getAddress());
+            $this->assertTrue($proxyAddress->isEncrypted());
+            $this->assertSame('tcp://127.0.0.1:1338', $serverAddress->getAddress());
+            $this->assertTrue($serverAddress->isEncrypted());
 
             return new Success(true);
         });
@@ -47,7 +51,12 @@ class WebSocketTest extends TestCase
 
         $inputStream
             ->method('read')
-            ->willReturnOnConsecutiveCalls(new Success('The message'), new Success(null))
+            ->willReturnOnConsecutiveCalls(new Success(json_encode([
+                'proxy_address'    => 'tcp://127.0.0.1:1337',
+                'proxy_encrypted'  => true,
+                'server_address'   => 'tcp://127.0.0.1:1338',
+                'server_encrypted' => true,
+            ])), new Success(null))
         ;
 
         $message = new Message($inputStream, false);

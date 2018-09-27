@@ -65,10 +65,6 @@ class WebSocket implements Application
 
     public function broadcast(TransactionMessage $message)
     {
-        if (!is_string(json_encode($message))) {
-            var_dump($message);
-        }
-
         $this->endpoint->broadcast(json_encode($message));
     }
 }

@@ -1,11 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace PeeHaa\SocketInspectTest\Unit\Message;
+namespace PeeHaa\SocketInspectTest\Unit\MessageBroker;
 
 use Amp\Loop;
 use PeeHaa\SocketInspect\Http\WebSocket as WebSocketApplication;
-use PeeHaa\SocketInspect\Inspect\Message\Server\Start;
-use PeeHaa\SocketInspect\Inspect\Message\WebSocket;
+use PeeHaa\SocketInspect\Message\ProxyStarted;
+use PeeHaa\SocketInspect\MessageBroker\WebSocket;
+use PeeHaa\SocketInspect\Proxy\Address;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +17,7 @@ class WebSocketTest extends TestCase
         Loop::run(function() {
             $broker = new WebSocket();
 
-            $originalMessage = new Start('tcp://127.0.0.1');
+            $originalMessage = new ProxyStarted(new Address('tcp://127.0.0.1'));
 
             /** @var MockObject|WebSocketApplication $application */
             $application = $this->createMock(WebSocketApplication::class);

@@ -10,7 +10,7 @@ connection.addEventListener('open', function() {
 
         connection.send(JSON.stringify({
             proxy_address: document.querySelector('li.new form input[name="proxy_address"]').value,
-            proxy_encrypted: false,
+            proxy_encrypted: document.querySelector('li.new form input[name="proxy_encrypted"]').checked,
             server_address: document.querySelector('li.new form input[name="server_address"]').value,
             server_encrypted: document.querySelector('li.new form input[name="server_encrypted"]').checked
         }));
@@ -38,11 +38,11 @@ function handleNewMessage(message) {
     } else if (message.initiator === 'server') {
         item.classList.add('server');
 
-        label.textContent = 'Server';
+        label.textContent = 'Server ' + message.client;
     } else {
         item.classList.add('client');
 
-        label.textContent = 'Client';
+        label.textContent = 'Client ' + message.client;
     }
 
     item.appendChild(label);

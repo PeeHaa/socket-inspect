@@ -3,10 +3,13 @@
 namespace PeeHaa\SocketInspect\Message;
 
 use PeeHaa\SocketInspect\Message\Enum\Initiator;
+use PeeHaa\SocketInspect\Proxy\Address;
 
 abstract class Message implements \JsonSerializable
 {
     private $server;
+
+    private $client;
 
     private $initiator;
 
@@ -14,9 +17,10 @@ abstract class Message implements \JsonSerializable
 
     private $message;
 
-    public function __construct(string $server, Initiator $initiator, string $message)
+    public function __construct(string $server, Initiator $initiator, string $message, ?string $client = null)
     {
         $this->server    = $server;
+        $this->client    = $client;
         $this->initiator = $initiator;
         $this->timestamp = new \DateTimeImmutable();
         $this->message   = $message;
@@ -25,6 +29,11 @@ abstract class Message implements \JsonSerializable
     public function getServer(): string
     {
         return $this->server;
+    }
+
+    public function getClient(): ?string
+    {
+        return $this->client;
     }
 
     public function getInitiator(): Initiator
@@ -46,6 +55,7 @@ abstract class Message implements \JsonSerializable
     {
         return [
             'server'    => $this->server,
+            'client'    => $this->client,
             'initiator' => $this->initiator->getValue(),
             'timestamp' => $this->timestamp->format('Y-m-d H:i:s.u'),
             'message'   => $this->message,

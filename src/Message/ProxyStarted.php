@@ -9,10 +9,16 @@ class ProxyStarted extends Message
 {
     public function __construct(Address $address)
     {
+        $encrypted = '';
+
+        if ($address->isEncrypted()) {
+            $encrypted = '(encrypted) ';
+        }
+
         parent::__construct(
             $address->getAddress(),
             Initiator::PROXY(),
-            sprintf('Started proxy on %s', $address->getAddress())
+            sprintf('Started %sproxy on %s', $encrypted, $address->getAddress())
         );
     }
 }

@@ -64,7 +64,7 @@ class Server
             while (($chunk = yield $this->socket->read()) !== null) {
                 yield $callback($chunk);
 
-                $this->messageBroker->send(new ServerSent($this->proxyAddress, $chunk));
+                $this->messageBroker->send(new ServerSent($this->proxyAddress, $chunk, $this->clientAddress));
             }
 
             $this->doClose();

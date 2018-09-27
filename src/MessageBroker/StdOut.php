@@ -3,15 +3,16 @@
 namespace PeeHaa\SocketInspect\MessageBroker;
 
 use Amp\ByteStream\ResourceOutputStream;
+use PeeHaa\SocketInspect\Message\Enum\Initiator;
 use PeeHaa\SocketInspect\Message\Message;
 use function Amp\asyncCall;
 
 class StdOut implements Broker
 {
     // phpcs:disable SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedConstant
-    private const ERROR_PREFIX = "\e[31m[ERROR]\e[0m";
-    private const INFO_PREFIX = "\e[1;34m[INFO]\e[0m";
-    private const SUCCESS_PREFIX = "\e[32m[DONE]\e[0m";
+    private const PREFIX_PROXY  = "\e[0;33m[PROXY]\e[0m";
+    private const PREFIX_CLIENT = "\e[4;36m[CLIENT %s]\e[0m";
+    private const PREFIX_SERVER = "\e[0;96m[SERVER %s]\e[0m";
     // phpcs:enable SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedConstant
 
     private $stdOut;
@@ -31,17 +32,22 @@ class StdOut implements Broker
     private function buildMessage(Message $message): string
     {
         return sprintf(
-            '%s %s %s::%s %s',
-            $this->getSeverityPrefix($message->getSeverity()),
+            '%s %s %s %s',
+            $message->getProxyAddress(),
+            $this->getInitiatorPrefix($message->getInitiator(), $message->getClient()),
             $message->getTimestamp()->format('Y-m-d H:i:s.u'),
-            $message->getCategory(),
-            $message->getType(),
             $message->getMessage()
         ) . PHP_EOL;
     }
 
-    private function getSeverityPrefix(Severity $severity): string
+    private function getInitiatorPrefix(Initiator $initiator, ?string $clientAddress = null): string
     {
-        return constant(sprintf('self::%s_PREFIX', $severity->getKey()));
+        $prefix = constant(sprintf('self::PREFIX_%s', $initiator->getKey()));
+
+        if ($clientAddress !== null) {
+            $prefix = sprintf($prefix, $clientAddress);
+        }
+
+        return $prefix;
     }
 }

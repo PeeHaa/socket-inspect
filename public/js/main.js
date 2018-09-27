@@ -18,7 +18,7 @@ connection.addEventListener('open', function() {
 });
 
 function handleNewMessage(message) {
-    const container = getConsole(message.server);
+    const container = getConsole(message.proxy);
     const list      = container.querySelector('ul');
     const item      = document.createElement('li');
     const pre       = document.createElement('pre');
@@ -51,7 +51,7 @@ function handleNewMessage(message) {
 
     list.appendChild(item);
 
-    const listItem = document.querySelector('aside li[data-server="' + message.server + '"]');
+    const listItem = document.querySelector('aside li[data-proxy="' + message.proxy + '"]');
 
     listItem.classList.add('newMessage');
 
@@ -62,19 +62,19 @@ function handleNewMessage(message) {
     list.scrollTop = list.scrollHeight;
 }
 
-function getConsole(server) {
-    if (document.querySelector('.console[data-server="' + server + '"]')) {
-        return document.querySelector('.console[data-server="' + server + '"]');
+function getConsole(proxy) {
+    if (document.querySelector('.console[data-proxy="' + proxy + '"]')) {
+        return document.querySelector('.console[data-proxy="' + proxy + '"]');
     }
 
-    createListItem(server);
+    createListItem(proxy);
 
     const container = document.createElement('div');
     const header    = document.createElement('div');
     const h1        = document.createElement('h1');
     const list      = document.createElement('ul');
 
-    h1.textContent = server;
+    h1.textContent = proxy;
 
     header.classList.add('header');
 
@@ -85,7 +85,7 @@ function getConsole(server) {
     container.appendChild(header);
     container.appendChild(list);
 
-    container.dataset.server = server;
+    container.dataset.proxy = proxy;
 
     document.querySelector('main').appendChild(container);
 
@@ -98,18 +98,18 @@ function getConsole(server) {
     return container;
 }
 
-function createListItem(server) {
+function createListItem(proxy) {
     const list = document.querySelector('aside ul');
     const item = document.createElement('li');
 
     item.classList.add('server', 'active');
 
-    item.textContent = server;
+    item.textContent = proxy;
 
-    item.dataset.server = server;
+    item.dataset.proxy = proxy;
 
-    document.querySelectorAll('aside ul li.server').forEach(function(serverItem) {
-        serverItem.classList.remove('active');
+    document.querySelectorAll('aside ul li.server').forEach(function(proxyItem) {
+        proxyItem.classList.remove('active');
     });
 
     item.classList.add('active');
@@ -120,7 +120,7 @@ function createListItem(server) {
 document.querySelector('aside ul').addEventListener('click', function(e) {
     const target = e.target;
 
-    if (target.tagName !== 'LI' || !target.classList.contains('server') || target.classList.contains('active')) {
+    if (target.tagName !== 'LI' || !target.classList.contains('proxy') || target.classList.contains('active')) {
         return;
     }
 
@@ -134,5 +134,5 @@ document.querySelector('aside ul').addEventListener('click', function(e) {
         document.querySelector('.console.active').classList.remove('active');
     }
 
-    document.querySelector('.console[data-server="' + target.textContent + '"]').classList.add('active');
+    document.querySelector('.console[data-proxy="' + target.textContent + '"]').classList.add('active');
 });

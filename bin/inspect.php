@@ -9,6 +9,7 @@ use Amp\Http\Server\Websocket\Websocket as AmpWebSocket;
 use Amp\Loop;
 use PeeHaa\SocketInspect\Http\WebSocket as WebSocketApplication;
 use PeeHaa\SocketInspect\MessageBroker\Combined;
+use PeeHaa\SocketInspect\MessageBroker\StdOut;
 use PeeHaa\SocketInspect\MessageBroker\WebSocket as WebSocketMessageBroker;
 use PeeHaa\SocketInspect\Proxy\Address;
 use PeeHaa\SocketInspect\Proxy\Proxy;
@@ -23,6 +24,7 @@ Loop::run(static function() {
     $webSocketMessageBroker = new WebSocketMessageBroker();
 
     $messageBroker->registerBroker($webSocketMessageBroker);
+    $messageBroker->registerBroker(new StdOut(STDOUT));
 
     $webSocketApplication = new WebSocketApplication(static function(Address $proxyAddress, Address $serverAddress) use ($messageBroker) {
         return (new Proxy($proxyAddress, $serverAddress, $messageBroker))->start();

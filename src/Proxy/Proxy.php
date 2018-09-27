@@ -66,16 +66,11 @@ class Proxy
             $client = new Client($this->proxyAddress, $clientSocket, $this->messageBroker);
 
             asyncCall(static function() use ($server, $client) {
-                try {
-                    $server->onReceived(\Closure::fromCallable([$client, 'send']));
-                    $client->onReceived(\Closure::fromCallable([$server, 'send']));
+                $server->onReceived(\Closure::fromCallable([$client, 'send']));
+                $client->onReceived(\Closure::fromCallable([$server, 'send']));
 
-                    $server->onClose(\Closure::fromCallable([$client, 'close']));
-                    $client->onClose(\Closure::fromCallable([$server, 'close']));
-                } catch (StreamException $e) {
-                    // we catch and silence writing to closed connections here
-                    // as it seems it's normal operation?
-                }
+                $server->onClose(\Closure::fromCallable([$client, 'close']));
+                $client->onClose(\Closure::fromCallable([$server, 'close']));
             });
         });
     }

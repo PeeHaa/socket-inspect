@@ -2,8 +2,10 @@
 
 namespace PeeHaa\SocketInspect\Proxy;
 
+use Amp\ByteStream\StreamException;
 use Amp\Promise;
 use Amp\Socket\ClientSocket;
+use Amp\Success;
 use PeeHaa\SocketInspect\Message\ConnectedToServer;
 use PeeHaa\SocketInspect\Message\DisconnectedFromServer;
 use PeeHaa\SocketInspect\Message\ServerSent;
@@ -89,11 +91,20 @@ class Server
 
     public function send(string $message): Promise
     {
-        return $this->socket->write($message);
+        try {
+            return $this->socket->write($message);
+        } catch (StreamException $e) {
+            // we catch and silence writing to closed connections here
+            return new Success();
+        }
     }
 
     public function close(): void
     {
-        $this->socket->close();
+        try {
+            $this->socket->close();
+        } catch (StreamException $e) {
+            // we catch and silence closing an already closed connections here
+        }
     }
 }

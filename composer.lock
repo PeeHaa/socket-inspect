@@ -570,16 +570,16 @@
         },
         {
             "name": "amphp/http-server-static-content",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/http-server-static-content.git",
-                "reference": "0a8a066ad2e657a6bea2da5ca79a0671713fd59f"
+                "reference": "6b6654cfd8aef60df104d794d06de48627f767b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/http-server-static-content/zipball/0a8a066ad2e657a6bea2da5ca79a0671713fd59f",
-                "reference": "0a8a066ad2e657a6bea2da5ca79a0671713fd59f",
+                "url": "https://api.github.com/repos/amphp/http-server-static-content/zipball/6b6654cfd8aef60df104d794d06de48627f767b3",
+                "reference": "6b6654cfd8aef60df104d794d06de48627f767b3",
                 "shasum": ""
             },
             "require": {
@@ -637,7 +637,7 @@
                 "server",
                 "static"
             ],
-            "time": "2018-09-20T20:09:25+00:00"
+            "time": "2018-09-28T18:55:20+00:00"
         },
         {
             "name": "amphp/parallel",

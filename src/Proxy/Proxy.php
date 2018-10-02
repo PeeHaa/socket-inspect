@@ -44,6 +44,10 @@ class Proxy
         asyncCall(function() use ($server) {
             /** @var ServerSocket $socket */
             while ($socket = yield $server->accept()) {
+                if ($this->proxyAddress->isEncrypted()) {
+                    yield $socket->enableCrypto();
+                }
+
                 $this->processClient($socket);
             }
         });

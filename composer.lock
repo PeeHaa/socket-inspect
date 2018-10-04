@@ -84,24 +84,26 @@
         },
         {
             "name": "amphp/byte-stream",
-            "version": "v1.3.1",
+            "version": "v1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/byte-stream.git",
-                "reference": "1b75b122e6f069e7d102eef065dc192119d99ca7"
+                "reference": "17fae3bcecf9b4e7854c4ee41e8d6f58dac5d98d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/byte-stream/zipball/1b75b122e6f069e7d102eef065dc192119d99ca7",
-                "reference": "1b75b122e6f069e7d102eef065dc192119d99ca7",
+                "url": "https://api.github.com/repos/amphp/byte-stream/zipball/17fae3bcecf9b4e7854c4ee41e8d6f58dac5d98d",
+                "reference": "17fae3bcecf9b4e7854c4ee41e8d6f58dac5d98d",
                 "shasum": ""
             },
             "require": {
                 "amphp/amp": "^2"
             },
             "require-dev": {
+                "amphp/php-cs-fixer-config": "dev-master",
                 "amphp/phpunit-util": "^1",
                 "friendsofphp/php-cs-fixer": "^2.3",
+                "infection/infection": "^0.9.3",
                 "phpunit/phpunit": "^6"
             },
             "type": "library",
@@ -137,7 +139,7 @@
                 "non-blocking",
                 "stream"
             ],
-            "time": "2018-04-04T05:33:09+00:00"
+            "time": "2018-10-03T15:37:23+00:00"
         },
         {
             "name": "amphp/cache",
@@ -810,16 +812,16 @@
         },
         {
             "name": "amphp/socket",
-            "version": "v0.10.9",
+            "version": "v0.10.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/socket.git",
-                "reference": "6e9686b62b87c2cad235139a44be5121fe34edbb"
+                "reference": "efbe8fb64cf0ddcb4034076ebf1e64920c1259e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/socket/zipball/6e9686b62b87c2cad235139a44be5121fe34edbb",
-                "reference": "6e9686b62b87c2cad235139a44be5121fe34edbb",
+                "url": "https://api.github.com/repos/amphp/socket/zipball/efbe8fb64cf0ddcb4034076ebf1e64920c1259e2",
+                "reference": "efbe8fb64cf0ddcb4034076ebf1e64920c1259e2",
                 "shasum": ""
             },
             "require": {
@@ -873,7 +875,7 @@
                 "tcp",
                 "tls"
             ],
-            "time": "2018-05-01T21:14:10+00:00"
+            "time": "2018-10-03T09:32:18+00:00"
         },
         {
             "name": "amphp/sync",

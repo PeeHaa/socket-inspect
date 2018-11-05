@@ -981,12 +981,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/websocket-server.git",
-                "reference": "edc0d431cb46b3486f437e285618145bf8c77ae2"
+                "reference": "1483d1c1eb7a8fb6a022459a62acaba27adf72ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/websocket-server/zipball/edc0d431cb46b3486f437e285618145bf8c77ae2",
-                "reference": "edc0d431cb46b3486f437e285618145bf8c77ae2",
+                "url": "https://api.github.com/repos/amphp/websocket-server/zipball/1483d1c1eb7a8fb6a022459a62acaba27adf72ea",
+                "reference": "1483d1c1eb7a8fb6a022459a62acaba27adf72ea",
                 "shasum": ""
             },
             "require": {
@@ -997,6 +997,10 @@
                 "amphp/socket": "^0.10.5"
             },
             "require-dev": {
+                "amphp/artax": "^3.0.14",
+                "amphp/http-server-router": "^1.0.0",
+                "amphp/http-server-static-content": "^1",
+                "amphp/log": "^1.0.0",
                 "amphp/phpunit-util": "^1",
                 "friendsofphp/php-cs-fixer": "^2.3",
                 "infection/infection": "^0.7.1",
@@ -1038,7 +1042,7 @@
                 "server",
                 "websocket"
             ],
-            "time": "2018-04-02T15:27:50+00:00"
+            "time": "2018-10-30T02:08:37+00:00"
         },
         {
             "name": "amphp/windows-registry",
@@ -2862,21 +2866,21 @@
         },
         {
             "name": "slevomat/coding-standard",
-            "version": "4.8.3",
+            "version": "4.8.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slevomat/coding-standard.git",
-                "reference": "32e1ca205fc34920f323582ed29c0602e3897ae3"
+                "reference": "af0c0c99e84106525484ef25f15144b9831522bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/32e1ca205fc34920f323582ed29c0602e3897ae3",
-                "reference": "32e1ca205fc34920f323582ed29c0602e3897ae3",
+                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/af0c0c99e84106525484ef25f15144b9831522bb",
+                "reference": "af0c0c99e84106525484ef25f15144b9831522bb",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1",
-                "squizlabs/php_codesniffer": "^3.3.0"
+                "squizlabs/php_codesniffer": "^3.3.1"
             },
             "require-dev": {
                 "jakub-onderka/php-parallel-lint": "1.0.0",
@@ -2897,7 +2901,7 @@
                 "MIT"
             ],
             "description": "Slevomat Coding Standard for PHP_CodeSniffer complements Consistence Coding Standard by providing sniffs with additional checks.",
-            "time": "2018-09-25T21:21:11+00:00"
+            "time": "2018-11-03T21:28:29+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
